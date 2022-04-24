@@ -43,4 +43,4 @@ def take_object(ROOT_dir, image_dir, list_tag_person, list_embedding_person):
       np.save(os.path.join(embedding_dir, e_name), list_embedding_person[j])
       cv2.imwrite(os.path.join(user_dir, i), img)
     df = pd.DataFrame(data)
-    df.to_csv(os.path.join(os.path.join(ROOT_dir, "pipeline-deepface/detail"), user + "_faces.csv"))
+    df.to_csv(os.path.join(os.path.join(ROOT_dir, "pipeline-deepface/detail"), user + "_faces.csv"), index= False)

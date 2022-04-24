@@ -67,4 +67,4 @@ def face_extraction(image_dir):
             cv2.imwrite(os.path.join(full_face_dir,name), cv2.resize(im_crop,(224,224)))
             cv2.imwrite(os.path.join(pos_dir,name), cv2.resize(im_crop,(224,224)))
     df = pd.DataFrame(data)
-    df.to_csv(os.path.join(information_dir, user + "_ff.csv"))
+    df.to_csv(os.path.join(information_dir, user + "_ff.csv"), index = False)
