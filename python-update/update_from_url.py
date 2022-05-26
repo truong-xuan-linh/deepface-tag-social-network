@@ -8,7 +8,7 @@ from deepface import DeepFace
 from distance import findCosineDistance
 from update import update_user_faces, update_user_ff
 
-def update(ROOT_dir, user_id, image_url):
+def update(ROOT_dir, user_id, image_url, user_face_db, faces_db):
   image_name = image_url.split("/")[-1]
   image_name = user_id + "_" + image_name.split(".")[0]
 
@@ -46,13 +46,13 @@ def update(ROOT_dir, user_id, image_url):
       
       face_embedding = DeepFace.represent(im_crop, model_name = models[8], enforce_detection=False)
 
-      update_user_ff(ROOT_dir, user_id,im_crop[:,:,::-1], image_name, faces[face], i)
+      update_user_ff(ROOT_dir, user_id,im_crop[:,:,::-1], image_name, faces[face], i, faces_db)
       vote = 0
       for embedding in user_embedding:
         if findCosineDistance(embedding, face_embedding) < 0.22:
           vote+=1
       if vote/len(user_embedding) > 0.5:
-        update_user_faces(ROOT_dir, user_id, "None", im_crop[:,:,::-1], face_embedding, image_name, i)
+        update_user_faces(ROOT_dir, user_id, "None", im_crop[:,:,::-1], face_embedding, image_name, i, user_face_db)
         continue
       for user_related in dict_embedding_users:
         vote = 0
@@ -60,5 +60,5 @@ def update(ROOT_dir, user_id, image_url):
           if findCosineDistance(embedding, face_embedding) < 0.22:
             vote+=1
         if vote/len(user_embedding) > 0.5:
-          update_user_faces(ROOT_dir, user_related, user_id, im_crop[:,:,::-1], face_embedding, image_name, i)
+          update_user_faces(ROOT_dir, user_related, user_id, im_crop[:,:,::-1], face_embedding, image_name, i, user_face_db)
           break
