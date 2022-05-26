@@ -45,7 +45,7 @@ def most_popular_face(image_dir, quality_model, glass_model, threshold = 3):
         gender2 = gender_list[i]
         glass2 = glass_list[i] == 0
         img_embedding = embedding_list[i]
-        thre = 0.28
+        thre = 0.3
         if glass1 == True or glass2 == True:
           thre =  0.18
         if gender1 == gender2:
@@ -87,35 +87,37 @@ def most_popular_face(image_dir, quality_model, glass_model, threshold = 3):
         del gender_list[p-j]
         del glass_list[p-j]
     #############Vot du lieu###############
-    for (_i, ps) in enumerate(list_embedding_person):
-      list_embedding_check =ps.copy() # random.sample(ps, min(len(ps), 3))
-      glasses = list_glasses_person[_i].copy()
-      for (_j, ps2) in enumerate(list_embedding_person[_i+1:]):
-        for (k, p) in enumerate(ps2): 
-          vote = 0
-          glass1 = list_glasses_person[_i+1+_j][k].copy()
-          for (h, embedding_check) in enumerate(list_embedding_check):
-            thre = 0.28
-            if glass1 == 0 or glasses[h] == 0:
-              thre = 0.18
-            if findCosineDistance(embedding_check, p) <= thre:
-              vote+=1
+    for vdl in range(2):
+      for (_i, ps) in enumerate(list_embedding_person):
+        list_embedding_check =ps.copy() # random.sample(ps, min(len(ps), 3))
+        glasses = list_glasses_person[_i].copy()
+        for (_j, ps2) in enumerate(list_embedding_person[_i+1:]):
+          for (k, p) in enumerate(ps2): 
+            vote = 0
+            glass1 = list_glasses_person[_i+1+_j][k].copy()
+            for (h, embedding_check) in enumerate(list_embedding_check):
+              thre = 0.3
+              if glass1 == 0 or glasses[h] == 0:
+                thre = 0.18
+              if findCosineDistance(embedding_check, p) <= thre:
+                vote+=1
 
-          # if vote/len(list_embedding_check) > 0.6:#len(list_embedding_check) < 10:
-          #   len_check = len(list_embedding_check) +1
-          # else:
-          #   len_check = len(list_embedding_check)
+            # if vote/len(list_embedding_check) > 0.6:#len(list_embedding_check) < 10:
+            #   len_check = len(list_embedding_check) +1
+            # else:
+            #   len_check = len(list_embedding_check)
+            if len(list_embedding_check) == 0:
+              pass
+            elif vote/(len(list_embedding_check)) > 0.55:
 
-          if vote/(len(list_embedding_check)+1) > 0.7:
+              list_person[_i]  = list_person[_i] + list_person[_j+_i+1]
+              list_embedding_person[_i]  = list_embedding_person[_i] + list_embedding_person[_j+_i+1]
+              list_glasses_person[_i]  = list_glasses_person[_i] + list_glasses_person[_j+_i+1]
 
-            list_person[_i]  = list_person[_i] + list_person[_j+_i+1]
-            list_embedding_person[_i]  = list_embedding_person[_i] + list_embedding_person[_j+_i+1]
-            list_glasses_person[_i]  = list_glasses_person[_i] + list_glasses_person[_j+_i+1]
-
-            list_embedding_person[_j+_i+1] = []
-            list_glasses_person[_j+_i+1] = []
-            list_person[_j+_i+1] = []
-            break
+              list_embedding_person[_j+_i+1] = []
+              list_glasses_person[_j+_i+1] = []
+              list_person[_j+_i+1] = []
+              break
     #############vot du lieu###########
     for (i,ps) in enumerate(list_person):
       len_lst.append(len(ps))

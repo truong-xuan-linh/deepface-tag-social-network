@@ -31,6 +31,7 @@ import pymongo
 """##**Face extraction**"""
 
 def main(ROOT_dir, quality_model_dir, glass_model_dir, uri):
+  
   client = pymongo.MongoClient(uri)
   mydb = client["test"]
   user_face = mydb["user-face"]
@@ -73,8 +74,13 @@ def main(ROOT_dir, quality_model_dir, glass_model_dir, uri):
       call('rm ' + BIG_image_dir + '/' + "zzzz"+ ' -r', shell=True)
 
 if __name__ == '__main__':
-  uri = "mongodb+srv://truong-xuan-linh:hahalolo@deepface.ky81b.mongodb.net/test"
   ROOT_dir = os.getenv('DEEPFACE_DATA')
+  try: 
+    os.mkdir(os.path.join(ROOT_dir, "pipeline-deepface"))
+  except:
+    pass
+  uri = "mongodb+srv://truong-xuan-linh:hahalolo@deepface.ky81b.mongodb.net/test"
+  
   # a file
   quality_model_dir = os.path.join(ROOT_dir, "pipeline-deepface", "quality_model.h5")
   if "quality_model.h5" not in os.listdir(os.path.join(ROOT_dir, "pipeline-deepface")):
